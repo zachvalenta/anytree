@@ -71,10 +71,12 @@ class DictExporter:
                 data["children"] = children
         return data
 
-    @staticmethod
-    def _iter_attr_values(node):
-        # pylint: disable=C0103
+    def _iter_attr_values(self, node):
         for k, v in node.__dict__.items():
-            if k in ("_NodeMixin__children", "_NodeMixin__parent"):
+            if k in ('_NodeMixin__children', '_NodeMixin__parent'):
                 continue
-            yield k, v
+            elif k == "target":
+                for key, val in self._iter_attr_values(v):
+                    yield key, val
+            else:
+                yield k, v
